@@ -4,6 +4,7 @@ import unittest
 from app import create_app, db
 from app.models import User, Post
 from config import Config
+from app.main.utils import slugify
 
 
 class TestConfig(Config):
@@ -131,6 +132,12 @@ class HealthCase(unittest.TestCase):
         response = self.app.test_client().get('/api/health')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json(), {'status': 'ok'})
+
+
+class UtilsCase(unittest.TestCase):
+    def test_slugify(self):
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+        self.assertEqual(slugify("  A  b "), "a-b")
 
 
 if __name__ == '__main__':
