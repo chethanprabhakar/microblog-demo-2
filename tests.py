@@ -148,6 +148,31 @@ class HealthCheckCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json(), {'status': 'ok'})
 
+    def _auth(self):
+        u = User(username='susan', email='susan@example.com')
+        db.session.add(u)
+        token = u.get_token()
+        db.session.commit()
+        return u, {'Authorization': f'Bearer {token}'}
+
+    def test_get_user(self):
+        u, headers = self._auth()
+        response = self.app.test_client().get(f'/api/users/{u.id}',
+                                              headers=headers)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()['username'], 'susan')
+
+    def test_get_missing_user(self):
+        _, headers = self._auth()
+        client = self.app.test_client()
+        response = client.get('/api/users/9999', headers=headers)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.get_json(), {'error': 'user_not_found'})
+        # other 404s keep the generic body
+        response = client.get('/api/nonexistent', headers=headers)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.get_json(), {'error': 'Not Found'})
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
