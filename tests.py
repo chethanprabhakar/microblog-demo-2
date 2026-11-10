@@ -4,6 +4,7 @@ import unittest
 from app import create_app, db
 from app.models import User, Post
 from config import Config
+from app.main.utils import slugify
 
 
 class TestConfig(Config):
@@ -119,6 +120,14 @@ class PostExcerptCase(unittest.TestCase):
 
     def test_excerpt_long(self):
         self.assertEqual(Post(body='abcdefghij').excerpt(5), 'abcde...')
+
+
+class SlugifyCase(unittest.TestCase):
+    def test_punctuation(self):
+        self.assertEqual(slugify('Hello, World!'), 'hello-world')
+
+    def test_whitespace(self):
+        self.assertEqual(slugify('  A  b '), 'a-b')
 
 
 class HealthCheckCase(unittest.TestCase):
