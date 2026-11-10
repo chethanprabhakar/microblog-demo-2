@@ -101,6 +101,16 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_post_excerpt_short(self):
+        u = User(username='john', email='john@example.com')
+        p = Post(body="short", author=u)
+        self.assertEqual(p.excerpt(10), "short")
+
+    def test_post_excerpt_long(self):
+        u = User(username='john', email='john@example.com')
+        p = Post(body="abcdefghij", author=u)
+        self.assertEqual(p.excerpt(5), "abcde...")
+
 
 class APITestCase(unittest.TestCase):
     def setUp(self):
