@@ -158,6 +158,11 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
             self.followers.select().subquery())
         return db.session.scalar(query)
 
+    def post_count(self):
+        query = sa.select(sa.func.count()).select_from(
+            self.posts.select().subquery())
+        return db.session.scalar(query)
+
     def following_count(self):
         query = sa.select(sa.func.count()).select_from(
             self.following.select().subquery())
