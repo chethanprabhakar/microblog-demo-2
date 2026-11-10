@@ -101,6 +101,19 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_post_excerpt(self):
+        # Test case 1: body length <= n
+        p1 = Post(body="short")
+        self.assertEqual(p1.excerpt(10), "short")
+        self.assertEqual(p1.excerpt(5), "short")
+        
+        # Test case 2: body length > n
+        p2 = Post(body="abcdefghij")
+        self.assertEqual(p2.excerpt(5), "abcde...")
+        self.assertEqual(p2.excerpt(3), "abc...")
+        self.assertEqual(p2.excerpt(10), "abcdefghij")
+        self.assertEqual(p2.excerpt(11), "abcdefghij")
+
 
 class APITestCase(unittest.TestCase):
     def setUp(self):

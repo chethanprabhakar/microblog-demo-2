@@ -299,6 +299,16 @@ class Post(SearchableMixin, db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
+    def excerpt(self, n):
+        """Return an excerpt of the post body.
+        
+        If the body length is less than or equal to n, return the full body.
+        Otherwise, return the first n characters followed by '...'.
+        """
+        if len(self.body) <= n:
+            return self.body
+        return self.body[:n] + '...'
+
 
 class Message(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
