@@ -102,6 +102,15 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f4, [p4])
 
 
+class PostExcerptCase(unittest.TestCase):
+    def test_excerpt_short(self):
+        self.assertEqual(Post(body='abcde').excerpt(5), 'abcde')
+        self.assertEqual(Post(body='abc').excerpt(5), 'abc')
+
+    def test_excerpt_long(self):
+        self.assertEqual(Post(body='abcdefghij').excerpt(5), 'abcde...')
+
+
 class HealthCheckCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app(TestConfig)
