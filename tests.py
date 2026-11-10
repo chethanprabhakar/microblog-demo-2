@@ -43,6 +43,12 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(User(username='susan').initials(), 'S')
         self.assertEqual(User(username='').initials(), '')
 
+    def test_post_word_count(self):
+        self.assertEqual(Post(body='hello brave new world').word_count(), 4)
+        self.assertEqual(Post(body='  a   b ').word_count(), 2)
+        self.assertEqual(Post(body='').word_count(), 0)
+        self.assertEqual(Post(body=None).word_count(), 0)
+
     def test_follow(self):
         u1 = User(username='john', email='john@example.com')
         u2 = User(username='susan', email='susan@example.com')
