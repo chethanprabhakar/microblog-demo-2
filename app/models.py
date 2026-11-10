@@ -223,6 +223,11 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
                                           Task.complete == False)
         return db.session.scalar(query)
 
+    def post_count(self):
+        query = sa.select(sa.func.count()).select_from(
+            self.posts.select().subquery())
+        return db.session.scalar(query)
+
     def posts_count(self):
         query = sa.select(sa.func.count()).select_from(
             self.posts.select().subquery())

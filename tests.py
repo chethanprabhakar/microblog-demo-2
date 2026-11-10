@@ -110,6 +110,18 @@ class UserModelCase(unittest.TestCase):
         p2 = Post(body="abcdefghij")
         self.assertEqual(p2.excerpt(5), "abcde...")
 
+    def test_post_count(self):
+        u = User(username='john', email='john@example.com')
+        db.session.add(u)
+        db.session.commit()
+        self.assertEqual(u.post_count(), 0)
+
+        p1 = Post(body="post 1", author=u)
+        p2 = Post(body="post 2", author=u)
+        db.session.add_all([p1, p2])
+        db.session.commit()
+        self.assertEqual(u.post_count(), 2)
+
 
 class HealthCase(unittest.TestCase):
     def setUp(self):
