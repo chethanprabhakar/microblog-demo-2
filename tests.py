@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 import unittest
 from app import create_app, db
 from app.models import User, Post
+from app.main.utils import slugify
 from config import Config
 
 
@@ -161,6 +162,58 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(response.content_type, 'application/json')
         data = response.get_json()
         self.assertEqual(data, {'status': 'ok'})
+
+
+class SlugifyTestCase(unittest.TestCase):
+    """Test cases for the slugify utility function."""
+    
+    def test_basic_slugify(self):
+        """Test the basic examples from acceptance criteria."""
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+        self.assertEqual(slugify("  A  b "), "a-b")
+    
+    def test_empty_string(self):
+        """Test slugify with empty string."""
+        self.assertEqual(slugify(""), "")
+    
+    def test_only_non_alphanumeric(self):
+        """Test slugify with only non-alphanumeric characters."""
+        self.assertEqual(slugify("!@#$%^&*()"), "")
+        self.assertEqual(slugify("---"), "")
+    
+    def test_multiple_spaces_and_symbols(self):
+        """Test slugify with multiple spaces and symbols."""
+        self.assertEqual(slugify("Hello   World!!!"), "hello-world")
+        self.assertEqual(slugify("Test---Me"), "test-me")
+        self.assertEqual(slugify("---test---me---"), "test-me")
+    
+    def test_mixed_case(self):
+        """Test slugify with mixed case letters."""
+        self.assertEqual(slugify("MiXeD CaSe"), "mixed-case")
+        self.assertEqual(slugify("UPPERCASE"), "uppercase")
+    
+    def test_numbers(self):
+        """Test slugify with numbers."""
+        self.assertEqual(slugify("Test 123"), "test-123")
+        self.assertEqual(slugify("456 Test"), "456-test")
+        self.assertEqual(slugify("1-2-3"), "1-2-3")
+    
+    def test_underscores(self):
+        """Test slugify with underscores."""
+        self.assertEqual(slugify("test_underscore"), "test-underscore")
+        self.assertEqual(slugify("_test_"), "test")
+    
+    def test_leading_trailing_hyphens(self):
+        """Test slugify strips leading and trailing hyphens."""
+        self.assertEqual(slugify("-hello-world-"), "hello-world")
+        self.assertEqual(slugify("---test---"), "test")
+        self.assertEqual(slugify("-a-"), "a")
+    
+    def test_special_characters(self):
+        """Test slugify with various special characters."""
+        self.assertEqual(slugify("Hello@World#2024"), "hello-world-2024")
+        self.assertEqual(slugify("Test & More"), "test-more")
+        self.assertEqual(slugify("Price: $100.99"), "price-100-99")
 
 
 if __name__ == '__main__':
