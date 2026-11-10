@@ -36,6 +36,13 @@ class UserModelCase(unittest.TestCase):
                                          'd4c74594d841139328695756648b6bd6'
                                          '?d=identicon&s=128'))
 
+    def test_initials(self):
+        self.assertEqual(User(username='ada lovelace').initials(), 'AL')
+        self.assertEqual(User(username='ada_lovelace').initials(), 'AL')
+        self.assertEqual(User(username='ada_king lovelace').initials(), 'AK')
+        self.assertEqual(User(username='susan').initials(), 'S')
+        self.assertEqual(User(username='').initials(), '')
+
     def test_follow(self):
         u1 = User(username='john', email='john@example.com')
         u2 = User(username='susan', email='susan@example.com')

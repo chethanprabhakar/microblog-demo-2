@@ -141,6 +141,10 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
 
+    def initials(self):
+        words = (self.username or '').replace('_', ' ').split()
+        return ''.join(word[0] for word in words[:2]).upper()
+
     def follow(self, user):
         if not self.is_following(user):
             self.following.add(user)
