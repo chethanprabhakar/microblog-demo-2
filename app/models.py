@@ -228,6 +228,13 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
             self.posts.select().subquery())
         return db.session.scalar(query)
 
+    def post_count(self):
+        """Return the number of posts the user has written.
+        
+        This is an alias for posts_count() for backward compatibility.
+        """
+        return self.posts_count()
+
     def to_dict(self, include_email=False):
         data = {
             'id': self.id,

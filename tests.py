@@ -114,6 +114,33 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(p2.excerpt(10), "abcdefghij")
         self.assertEqual(p2.excerpt(11), "abcdefghij")
 
+    def test_post_count(self):
+        # Create a user with no posts
+        u1 = User(username='john', email='john@example.com')
+        db.session.add(u1)
+        db.session.commit()
+        
+        # Test with no posts
+        self.assertEqual(u1.post_count(), 0)
+        self.assertEqual(u1.posts_count(), 0)
+        
+        # Add two posts
+        p1 = Post(body="first post", author=u1)
+        p2 = Post(body="second post", author=u1)
+        db.session.add_all([p1, p2])
+        db.session.commit()
+        
+        # Test with two posts
+        self.assertEqual(u1.post_count(), 2)
+        self.assertEqual(u1.posts_count(), 2)
+        
+        # Test another user still has 0 posts
+        u2 = User(username='susan', email='susan@example.com')
+        db.session.add(u2)
+        db.session.commit()
+        self.assertEqual(u2.post_count(), 0)
+        self.assertEqual(u2.posts_count(), 0)
+
 
 class APITestCase(unittest.TestCase):
     def setUp(self):
