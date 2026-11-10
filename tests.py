@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 import unittest
 from app import create_app, db
 from app.models import User, Post
+from app.main.utils import slugify
 from config import Config
 
 
@@ -129,6 +130,14 @@ class APITestCase(unittest.TestCase):
         response = self.client.get('/api/health')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_json(), {"status": "ok"})
+
+
+class UtilsTestCase(unittest.TestCase):
+    def test_slugify_hello_world(self):
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+
+    def test_slugify_whitespace(self):
+        self.assertEqual(slugify("  A  b "), "a-b")
 
 
 if __name__ == '__main__':
