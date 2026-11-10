@@ -101,6 +101,15 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_post_excerpt(self):
+        # Test case where body is shorter than n
+        p1 = Post(body="short")
+        self.assertEqual(p1.excerpt(10), "short")
+
+        # Test case where body is longer than n
+        p2 = Post(body="abcdefghij")
+        self.assertEqual(p2.excerpt(5), "abcde...")
+
 
 class HealthCase(unittest.TestCase):
     def setUp(self):
