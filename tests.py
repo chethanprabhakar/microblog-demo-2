@@ -101,6 +101,13 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_initials(self):
+        self.assertEqual(User(username='ada lovelace').initials(), 'AL')
+        self.assertEqual(User(username='ada_lovelace').initials(), 'AL')
+        self.assertEqual(User(username='john paul george').initials(), 'JP')
+        self.assertEqual(User(username='susan').initials(), 'S')
+        self.assertEqual(User(username='').initials(), '')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
