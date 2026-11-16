@@ -101,6 +101,16 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_post_count(self):
+        u = User(username='john', email='john@example.com')
+        db.session.add(u)
+        db.session.commit()
+        self.assertEqual(u.post_count(), 0)
+        db.session.add_all([Post(body='one', author=u),
+                            Post(body='two', author=u)])
+        db.session.commit()
+        self.assertEqual(u.post_count(), 2)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

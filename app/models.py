@@ -163,6 +163,11 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
             self.following.select().subquery())
         return db.session.scalar(query)
 
+    def post_count(self):
+        query = sa.select(sa.func.count()).select_from(
+            self.posts.select().subquery())
+        return db.session.scalar(query)
+
     def following_posts(self):
         Author = so.aliased(User)
         Follower = so.aliased(User)
