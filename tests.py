@@ -4,6 +4,7 @@ import unittest
 from app import create_app, db
 from app.models import User, Post
 from config import Config
+from app.main.utils import slugify
 
 
 class TestConfig(Config):
@@ -100,6 +101,14 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f2, [p2, p3])
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
+
+
+class SlugifyCase(unittest.TestCase):
+    def test_slugify(self):
+        self.assertEqual(slugify("Hello, World!"), "hello-world")
+        self.assertEqual(slugify("  A  b "), "a-b")
+        self.assertEqual(slugify("---x---"), "x")
+        self.assertEqual(slugify(""), "")
 
 
 if __name__ == '__main__':
