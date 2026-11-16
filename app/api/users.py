@@ -10,7 +10,10 @@ from app.api.errors import bad_request
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
-    return db.get_or_404(User, id).to_dict()
+    user = db.session.get(User, id)
+    if user is None:
+        return {'error': 'user_not_found'}, 404
+    return user.to_dict()
 
 
 @bp.route('/users', methods=['GET'])

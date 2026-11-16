@@ -102,5 +102,41 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f4, [p4])
 
 
+class UserApiCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+        self.client = self.app.test_client()
+        u = User(username='susan', email='susan@example.com')
+        db.session.add(u)
+        db.session.commit()
+        self.user_id = u.id
+        self.headers = {'Authorization': f'Bearer {u.get_token()}'}
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_get_existing_user(self):
+        r = self.client.get(f'/api/users/{self.user_id}',
+                            headers=self.headers)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.get_json()['username'], 'susan')
+
+    def test_get_missing_user(self):
+        r = self.client.get('/api/users/9999', headers=self.headers)
+        self.assertEqual(r.status_code, 404)
+        self.assertEqual(r.get_json(), {'error': 'user_not_found'})
+
+    def test_other_404_unchanged(self):
+        r = self.client.get('/api/nonexistent', headers=self.headers)
+        self.assertEqual(r.status_code, 404)
+        self.assertEqual(r.get_json(), {'error': 'Not Found'})
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
