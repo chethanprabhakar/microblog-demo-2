@@ -101,6 +101,11 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
 
+    def test_post_excerpt(self):
+        self.assertEqual(Post(body='abcde').excerpt(5), 'abcde')
+        self.assertEqual(Post(body='abc').excerpt(5), 'abc')
+        self.assertEqual(Post(body='abcdefghij').excerpt(5), 'abcde...')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
