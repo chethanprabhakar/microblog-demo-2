@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 from hashlib import md5
 import json
+import re
 import secrets
 from time import time
 from typing import Optional
@@ -140,6 +141,10 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+
+    def initials(self):
+        words = [w for w in re.split(r'[ _]+', self.username or '') if w]
+        return ''.join(w[0].upper() for w in words[:2])
 
     def follow(self, user):
         if not self.is_following(user):
