@@ -102,5 +102,14 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f4, [p4])
 
 
+class PostModelCase(unittest.TestCase):
+    def test_excerpt_short_body_unchanged(self):
+        self.assertEqual(Post(body='abcde').excerpt(5), 'abcde')
+        self.assertEqual(Post(body='abc').excerpt(5), 'abc')
+
+    def test_excerpt_long_body_truncated(self):
+        self.assertEqual(Post(body='abcdefghij').excerpt(5), 'abcde...')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
