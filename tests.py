@@ -102,5 +102,16 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f4, [p4])
 
 
+class HealthEndpointCase(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app(TestConfig)
+        self.client = self.app.test_client()
+
+    def test_health(self):
+        response = self.client.get('/api/health')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {'status': 'ok'})
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
