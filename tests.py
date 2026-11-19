@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta
 import unittest
 from app import create_app, db
 from app.models import User, Post
+from app.text_utils import slugify
 from config import Config
 
 
@@ -100,6 +101,13 @@ class UserModelCase(unittest.TestCase):
         self.assertEqual(f2, [p2, p3])
         self.assertEqual(f3, [p3, p4])
         self.assertEqual(f4, [p4])
+
+
+class SlugifyCase(unittest.TestCase):
+    def test_slugify(self):
+        self.assertEqual(slugify('Hello, World!'), 'hello-world')
+        self.assertEqual(slugify('  --A  b__c--  '), 'a-b-c')
+        self.assertEqual(slugify('!!!'), '')
 
 
 if __name__ == '__main__':
