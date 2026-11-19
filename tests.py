@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 import unittest
 from app import create_app, db
 from app.models import User, Post
-from app.text_utils import slugify, word_count
+from app.text_utils import slugify, word_count, reading_time
 from config import Config
 
 
@@ -113,6 +113,12 @@ class SlugifyCase(unittest.TestCase):
         self.assertEqual(word_count('hello big  world'), 3)
         self.assertEqual(word_count(' a\tb\nc '), 3)
         self.assertEqual(word_count(''), 0)
+
+    def test_reading_time(self):
+        self.assertEqual(reading_time(''), 1)
+        self.assertEqual(reading_time('word ' * 200), 1)
+        self.assertEqual(reading_time('word ' * 201), 2)
+        self.assertEqual(reading_time('word ' * 400), 2)
 
 
 if __name__ == '__main__':
